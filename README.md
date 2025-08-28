@@ -1,60 +1,34 @@
-# 🚀 Welcome to Z.ai Code Scaffold
+# 🚀 Omnior AI DevOps Orchestrator
 
-A modern, production-ready web application scaffold powered by cutting-edge technologies, designed to accelerate your development with [Z.ai](https://chat.z.ai)'s AI-powered coding assistance.
+A comprehensive AI-powered development orchestration platform that automates web application generation from natural language descriptions. Built with Next.js, featuring a complete pipeline from specification to deployment.
 
-## ✨ Technology Stack
+## ✨ Features
 
-This scaffold provides a robust foundation built with:
+### 🤖 AI DevOps Pipeline
+- **Natural Language Processing**: Convert user goals into structured development plans
+- **Automated Code Generation**: Generate complete web applications with backend and frontend
+- **Template System**: Pre-built FastAPI + React templates with authentication and database
+- **Pipeline Monitoring**: Real-time dashboard for tracking execution progress
+- **Quality Assurance**: Built-in testing and validation steps
 
-### 🎯 Core Framework
-- **⚡ Next.js 15** - The React framework for production with App Router
-- **📘 TypeScript 5** - Type-safe JavaScript for better developer experience
-- **🎨 Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
+### 🏗️ Architecture
+- **Orchestrator Engine**: TypeScript-based pipeline runner
+- **Dashboard UI**: Modern React interface with shadcn/ui components
+- **Template Management**: Organized template system for different application types
+- **Workspace Management**: Persistent storage for generated applications
+- **Containerization**: Full Docker support for reproducible deployments
 
-### 🧩 UI Components & Styling
-- **🧩 shadcn/ui** - High-quality, accessible components built on Radix UI
-- **🎯 Lucide React** - Beautiful & consistent icon library
-- **🌈 Framer Motion** - Production-ready motion library for React
-- **🎨 Next Themes** - Perfect dark mode in 2 lines of code
-
-### 📋 Forms & Validation
-- **🎣 React Hook Form** - Performant forms with easy validation
-- **✅ Zod** - TypeScript-first schema validation
-
-### 🔄 State Management & Data Fetching
-- **🐻 Zustand** - Simple, scalable state management
-- **🔄 TanStack Query** - Powerful data synchronization for React
-- **🌐 Axios** - Promise-based HTTP client
-
-### 🗄️ Database & Backend
-- **🗄️ Prisma** - Next-generation Node.js and TypeScript ORM
-- **🔐 NextAuth.js** - Complete open-source authentication solution
-
-### 🎨 Advanced UI Features
-- **📊 TanStack Table** - Headless UI for building tables and datagrids
-- **🖱️ DND Kit** - Modern drag and drop toolkit for React
-- **📊 Recharts** - Redefined chart library built with React and D3
-- **🖼️ Sharp** - High performance image processing
-
-### 🌍 Internationalization & Utilities
-- **🌍 Next Intl** - Internationalization library for Next.js
-- **📅 Date-fns** - Modern JavaScript date utility library
-- **🪝 ReactUse** - Collection of essential React hooks for modern development
-
-## 🎯 Why This Scaffold?
-
-- **🏎️ Fast Development** - Pre-configured tooling and best practices
-- **🎨 Beautiful UI** - Complete shadcn/ui component library with advanced interactions
-- **🔒 Type Safety** - Full TypeScript configuration with Zod validation
-- **📱 Responsive** - Mobile-first design principles with smooth animations
-- **🗄️ Database Ready** - Prisma ORM configured for rapid backend development
-- **🔐 Auth Included** - NextAuth.js for secure authentication flows
-- **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
-- **🌍 i18n Ready** - Multi-language support with Next Intl
-- **🚀 Production Ready** - Optimized build and deployment settings
-- **🤖 AI-Friendly** - Structured codebase perfect for AI assistance
+### 🛠️ Technology Stack
+- **Frontend**: Next.js 15, React 18, TypeScript 5
+- **UI Components**: shadcn/ui, Tailwind CSS 4, Lucide Icons
+- **Backend**: FastAPI templates with JWT authentication
+- **Database**: SQLite/PostgreSQL support with Prisma ORM
+- **Containerization**: Docker & Docker Compose
+- **Real-time**: WebSocket support for live updates
 
 ## 🚀 Quick Start
+
+### Local Development
 
 ```bash
 # Install dependencies
@@ -63,79 +37,324 @@ npm install
 # Start development server
 npm run dev
 
-# Build for production
-npm run build
-
-# Start production server
-npm start
+# Access the orchestrator dashboard
+open http://localhost:3000/orchestrator
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
+### Docker Containerization
 
-## 🤖 Powered by Z.ai
+#### Prerequisites
+- Docker (https://docs.docker.com/get-docker/)
+- Docker Compose (https://docs.docker.com/compose/install/)
 
-This scaffold is optimized for use with [Z.ai](https://chat.z.ai) - your AI assistant for:
+#### Development Mode (Hot Reload)
+```bash
+# Start in development mode with hot reload
+docker-compose -f docker-compose.yml -f docker-compose.override.yml up --build
 
-- **💻 Code Generation** - Generate components, pages, and features instantly
-- **🎨 UI Development** - Create beautiful interfaces with AI assistance  
-- **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions
-- **📝 Documentation** - Auto-generate comprehensive documentation
-- **🚀 Optimization** - Performance improvements and best practices
-
-Ready to build something amazing? Start chatting with Z.ai at [chat.z.ai](https://chat.z.ai) and experience the future of AI-powered development!
-
-## 📁 Project Structure
-
-```
-src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable React components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions and configurations
+# Or use the setup script
+chmod +x setup.sh
+./setup.sh dev
 ```
 
-## 🎨 Available Features & Components
+#### Production Mode
+```bash
+# Build and run in production
+docker-compose up --build --detach
 
-This scaffold includes a comprehensive set of modern web development tools:
+# Or use the setup script
+./setup.sh prod
+```
 
-### 🧩 UI Components (shadcn/ui)
-- **Layout**: Card, Separator, Aspect Ratio, Resizable Panels
-- **Forms**: Input, Textarea, Select, Checkbox, Radio Group, Switch
-- **Feedback**: Alert, Toast (Sonner), Progress, Skeleton
-- **Navigation**: Breadcrumb, Menubar, Navigation Menu, Pagination
-- **Overlay**: Dialog, Sheet, Popover, Tooltip, Hover Card
-- **Data Display**: Badge, Avatar, Calendar
+#### Alternative: Using Setup Script
+```bash
+# Show available commands
+./setup.sh help
 
-### 📊 Advanced Data Features
-- **Tables**: Powerful data tables with sorting, filtering, pagination (TanStack Table)
-- **Charts**: Beautiful visualizations with Recharts
-- **Forms**: Type-safe forms with React Hook Form + Zod validation
+# Start development mode
+./setup.sh dev
 
-### 🎨 Interactive Features
-- **Animations**: Smooth micro-interactions with Framer Motion
-- **Drag & Drop**: Modern drag-and-drop functionality with DND Kit
-- **Theme Switching**: Built-in dark/light mode support
+# Start production mode
+./setup.sh prod
 
-### 🔐 Backend Integration
-- **Authentication**: Ready-to-use auth flows with NextAuth.js
-- **Database**: Type-safe database operations with Prisma
-- **API Client**: HTTP requests with Axios + TanStack Query
-- **State Management**: Simple and scalable with Zustand
+# Build image only
+./setup.sh build
 
-### 🌍 Production Features
-- **Internationalization**: Multi-language support with Next Intl
-- **Image Optimization**: Automatic image processing with Sharp
-- **Type Safety**: End-to-end TypeScript with Zod validation
-- **Essential Hooks**: 100+ useful React hooks with ReactUse for common patterns
+# Stop containers
+./setup.sh stop
 
-## 🤝 Get Started with Z.ai
+# View logs
+./setup.sh logs
 
-1. **Clone this scaffold** to jumpstart your project
-2. **Visit [chat.z.ai](https://chat.z.ai)** to access your AI coding assistant
-3. **Start building** with intelligent code generation and assistance
-4. **Deploy with confidence** using the production-ready setup
+# Show status
+./setup.sh status
+
+# Clean up
+./setup.sh clean
+```
+
+## 📊 Dashboard Usage
+
+### Running a Pipeline
+1. Navigate to `/orchestrator` in your browser
+2. Click "Run Sample Pipeline" to execute a demo
+3. Monitor the real-time execution logs
+4. View generated artifacts in the workspace
+
+### Pipeline Steps
+1. **Planner**: Analyzes natural language goal and creates development plan
+2. **Specifier**: Generates OpenAPI specs and database schema
+3. **Coder**: Copies and adapts template files
+4. **Tester**: Runs automated tests (simulated)
+5. **Fixer**: Addresses any issues found
+6. **Deployer**: Prepares deployment configuration
+7. **Evaluator**: Validates against acceptance criteria
+
+### Loading Existing Logs
+1. Enter the path to a `pipeline_log.json` file
+2. Click "Load" to view execution history
+3. Review step-by-step progress with status indicators
+
+## 🏗️ Project Structure
+
+```
+├── src/app/
+│   ├── api/orchestrator/
+│   │   ├── route.ts              # Main orchestrator API
+│   │   └── logs/route.ts         # Logs API endpoint
+│   ├── orchestrator/
+│   │   └── page.tsx              # Dashboard UI
+│   └── page.tsx                  # Homepage
+├── templates/
+│   └── webapp_fastapi_postgres_react/
+│       ├── backend/               # FastAPI application template
+│       ├── frontend/              # React application template
+│       └── docker-compose.yml     # Template containerization
+├── workspace/                    # Generated run artifacts (mounted volume)
+├── Dockerfile                     # Container build configuration
+├── docker-compose.yml            # Production deployment
+├── docker-compose.override.yml   # Development configuration
+├── .dockerignore                 # Docker build exclusions
+└── setup.sh                      # Setup and management script
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+- `NODE_ENV`: Set to 'development' or 'production'
+- `PORT`: Application port (default: 3000)
+- `NEXT_TELEMETRY_DISABLED`: Disable Next.js telemetry
+
+### Docker Volumes
+- `./workspace:/app/workspace`: Persistent storage for generated applications
+- `./templates:/app/templates`: Template directory access
+
+### Pipeline Configuration
+Pipeline behavior can be customized by modifying:
+- Template files in `/templates/`
+- Pipeline logic in `/src/app/api/orchestrator/route.ts`
+- Dashboard UI in `/src/app/orchestrator/page.tsx`
+
+## 📝 API Endpoints
+
+### Orchestrator API
+- `GET /api/orchestrator` - API status and endpoints
+- `POST /api/orchestrator` - Execute pipeline with natural language goal
+  ```json
+  {
+    "goal": "Build a TODO web app with users, JWT auth, and a /health endpoint."
+  }
+  ```
+
+### Logs API
+- `GET /api/orchestrator/logs?path=<file_path>` - Load pipeline logs
+
+### Health Check
+- `GET /api/health` - Application health status
+
+## 🐳 Docker Deployment
+
+### Production Deployment
+```bash
+# Build and start production container
+docker-compose up --build -d
+
+# View logs
+docker-compose logs -f
+
+# Stop containers
+docker-compose down
+```
+
+### Development Workflow
+```bash
+# Start development container with hot reload
+docker-compose -f docker-compose.yml -f docker-compose.override.yml up --build
+
+# The application will be available at http://localhost:3000
+# Changes to source files will trigger automatic rebuilds
+```
+
+### Container Management
+```bash
+# View container status
+docker-compose ps
+
+# View logs
+docker-compose logs -f
+
+# Stop and remove containers
+docker-compose down
+
+# Clean up volumes
+docker-compose down -v
+
+# Rebuild and start
+docker-compose up --build --force-recreate
+```
+
+## 🔍 Generated Application Structure
+
+When the pipeline runs, it creates complete web applications with:
+
+### Backend (FastAPI)
+- JWT authentication system
+- RESTful API endpoints
+- Database models and migrations
+- Docker containerization
+- Health check endpoints
+
+### Frontend (React)
+- Authentication UI
+- CRUD operations
+- Responsive design
+- API integration
+- Docker containerization
+
+### Deployment
+- Docker Compose configuration
+- Environment variable support
+- Health checks
+- Production-ready setup
+
+## 🛠️ Development
+
+### Adding New Templates
+1. Create template directory in `/templates/`
+2. Add backend and frontend structure
+3. Include Docker configuration
+4. Update template selection logic in orchestrator
+
+### Extending Pipeline
+1. Modify pipeline stages in `/src/app/api/orchestrator/route.ts`
+2. Add new step functions
+3. Update logging and error handling
+4. Test with sample goals
+
+### Customizing Dashboard
+1. Edit UI components in `/src/app/orchestrator/page.tsx`
+2. Add new visualizations or controls
+3. Update API calls for new features
+4. Test user interactions
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+#### Container Won't Start
+```bash
+# Check Docker logs
+docker-compose logs
+
+# Verify Docker is running
+docker --version
+docker-compose --version
+
+# Check port availability
+netstat -tulpn | grep :3000
+```
+
+#### Pipeline Fails
+1. Check workspace directory permissions
+2. Verify template files exist
+3. Review pipeline logs in dashboard
+4. Check API endpoint responses
+
+#### Dashboard Not Loading
+1. Verify container is running: `docker-compose ps`
+2. Check logs: `docker-compose logs`
+3. Ensure port 3000 is available
+4. Try accessing `http://localhost:3000/orchestrator`
+
+### Getting Help
+- Check container logs: `./setup.sh logs`
+- Verify Docker installation
+- Review this README for configuration details
+- Check template file structure
+
+## 📈 Monitoring
+
+### Health Checks
+The application includes built-in health monitoring:
+- Container health checks in Docker Compose
+- API health endpoint at `/api/health`
+- Pipeline execution logging
+- Real-time dashboard updates
+
+### Logging
+- Application logs: `docker-compose logs`
+- Pipeline execution: Dashboard UI
+- API requests: Console output
+- Error tracking: Built-in error handling
+
+## 🔒 Security
+
+### Best Practices
+- Use environment variables for sensitive data
+- Implement proper authentication in generated apps
+- Regular security updates for dependencies
+- Secure file permissions
+- Network isolation in production
+
+### Docker Security
+- Use official base images
+- Regular security scanning
+- Minimal privilege containers
+- Secure volume mounting
+- Network segmentation
+
+## 🚀 Deployment
+
+### Production Deployment
+```bash
+# Build and start production containers
+./setup.sh prod
+
+# Or manually
+docker-compose up --build -d
+
+# Verify deployment
+curl http://localhost:3000/api/health
+```
+
+### Scaling
+- Use Docker Swarm or Kubernetes for multi-container deployments
+- Implement load balancing for high availability
+- Set up monitoring and alerting
+- Configure backup and recovery procedures
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Add your improvements
+4. Test thoroughly
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
 
 ---
 
-Built with ❤️ for the developer community. Supercharged by [Z.ai](https://chat.z.ai) 🚀
+Built with ❤️ for the AI-powered development community. Supercharged by Next.js and Docker 🚀

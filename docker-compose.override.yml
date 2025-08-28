@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  omnior-app:
+    environment:
+      NODE_ENV: development
+    command: npm run dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./workspace:/app/workspace
+      - ./templates:/app/templates
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
