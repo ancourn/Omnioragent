@@ -1,0 +1,56 @@
+[
+  {
+    "time": "2025-08-28T09:08:17.026ZZ",
+    "step": "start",
+    "status": "ok",
+    "note": "Build a TODO web app with users, JWT auth, and a /health endpoint."
+  },
+  {
+    "time": "2025-08-28T09:08:17.026ZZ",
+    "step": "planner",
+    "status": "ok",
+    "note": "{\"title\":\"AutoRun MVP\",\"tasks\":[{\"id\":\"spec-1\",\"description\":\"Produce OpenAPI and DB schema\",\"type\":\"spec\"},{\"id\":\"code-1\",\"description\":\"Copy template and adapt config\",\"type\":\"code\"},{\"id\":\"test-1\",\"description\":\"Run unit tests (simulated)\",\"type\":\"test\"},{\"id\":\"deploy-1\",\"description\":\"Build docker-compose (simulated)\",\"type\":\"deploy\"},{\"id\":\"eval-1\",\"description\":\"Evaluate acceptance criteria\",\"type\":\"eval\"}],\"acceptance_criteria\":[\"/health returns 200\",\"CI tests pass\"],\"risks\":[\"DB not ready\"],\"time_budget_minutes\":60}"
+  },
+  {
+    "time": "2025-08-28T09:08:17.027ZZ",
+    "step": "specifier",
+    "status": "ok",
+    "note": "spec saved"
+  },
+  {
+    "time": "2025-08-28T09:08:17.037ZZ",
+    "step": "coder",
+    "status": "ok",
+    "note": "repo created"
+  },
+  {
+    "time": "2025-08-28T09:08:18.039ZZ",
+    "step": "tester",
+    "status": "ok",
+    "note": "Simulated tests passed"
+  },
+  {
+    "time": "2025-08-28T09:08:18.040ZZ",
+    "step": "fixer",
+    "status": "ok",
+    "note": "No fixes needed"
+  },
+  {
+    "time": "2025-08-28T09:08:18.041ZZ",
+    "step": "deployer",
+    "status": "ok",
+    "note": "docker-compose found"
+  },
+  {
+    "time": "2025-08-28T09:08:18.041ZZ",
+    "step": "evaluator",
+    "status": "ok",
+    "note": "{\"accepted\":true,\"issues\":[]}"
+  },
+  {
+    "time": "2025-08-28T09:08:18.042ZZ",
+    "step": "finish",
+    "status": "ok",
+    "note": "pipeline complete"
+  }
+]
