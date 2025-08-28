@@ -1,0 +1,68 @@
+{
+  "openapi": {
+    "paths": {
+      "/health": {
+        "get": {
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          }
+        }
+      },
+      "/auth/signup": {
+        "post": {
+          "requestBody": {
+            "content": {
+              "application/json": {}
+            }
+          },
+          "responses": {
+            "200": {}
+          }
+        }
+      },
+      "/todos": {
+        "get": {},
+        "post": {}
+      }
+    }
+  },
+  "db_schema": {
+    "tables": [
+      {
+        "name": "users",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "email",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "name": "todos",
+        "columns": [
+          {
+            "name": "id",
+            "type": "integer"
+          },
+          {
+            "name": "title",
+            "type": "text"
+          }
+        ]
+      }
+    ]
+  },
+  "folder_tree": [
+    "backend/",
+    "frontend/"
+  ],
+  "tests": [
+    "test_health.py"
+  ]
+}

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { execSync } from 'child_process';
+import { RunDB, LogDB, ArtifactDB, createRunWithData } from '@/lib/orchestrator-db';
 
 // Define types for our pipeline
 interface PipelineTask {
@@ -37,17 +38,25 @@ const ROOT = process.cwd();
 const WORKSPACE = path.join(ROOT, 'workspace');
 const TEMPLATES = path.join(ROOT, 'templates', 'webapp_fastapi_postgres_react');
 
-async function logStep(runPath: string, step: string, status: string, note: string = "") {
-  const entry: LogEntry = {
-    time: new Date().toISOString() + "Z",
-    step,
-    status,
-    note
-  };
-  
-  const logFile = path.join(runPath, 'pipeline_log.json');
-  
+// Global run storage for streaming
+const activeRuns = new Map<string, any>();
+
+async function logStepDB(runId: string, step: string, status: string, note: string = "") {
   try {
+    // Write to database
+    await LogDB.create(runId, step, status, note);
+    
+    // Also write to file system for backward compatibility
+    const runPath = path.join(WORKSPACE, `run-${runId}`);
+    const logFile = path.join(runPath, 'pipeline_log.json');
+    
+    const entry: LogEntry = {
+      time: new Date().toISOString() + "Z",
+      step,
+      status,
+      note
+    };
+    
     let data: LogEntry[] = [];
     try {
       const existingData = await fs.readFile(logFile, 'utf-8');
@@ -58,6 +67,11 @@ async function logStep(runPath: string, step: string, status: string, note: stri
     
     data.push(entry);
     await fs.writeFile(logFile, JSON.stringify(data, null, 2));
+    
+    // Store in active runs for streaming
+    if (activeRuns.has(runId)) {
+      activeRuns.get(runId).logs.push(entry);
+    }
   } catch (error) {
     console.error('Error writing log:', error);
   }
@@ -105,7 +119,7 @@ function specifier(plan: Plan): Specification {
   };
 }
 
-async function coder(spec: Specification, runPath: string): Promise<boolean> {
+async function coder(spec: Specification, runPath: string, runId: string): Promise<boolean> {
   try {
     const src = TEMPLATES;
     const dst = path.join(runPath, 'repo');
@@ -152,8 +166,9 @@ async function coder(spec: Specification, runPath: string): Promise<boolean> {
       // README might not exist, that's ok
     }
     
-    // Save spec
+    // Save spec as artifact
     await fs.writeFile(path.join(dst, 'SPEC.json'), JSON.stringify(spec, null, 2));
+    await ArtifactDB.create(runId, 'SPEC.json', 'json', JSON.stringify(spec, null, 2));
     
     return true;
   } catch (error) {
@@ -216,45 +231,68 @@ function evaluator(runPath: string, testOk: boolean, deployOk: any) {
   };
 }
 
-async function runPipeline(nlGoal: string): Promise<string> {
+async function runPipeline(nlGoal: string): Promise<{ runId: string; runPath: string }> {
+  // Create run in database
+  const run = await RunDB.create(nlGoal);
+  const runId = run.id;
+  
+  // Initialize active run storage
+  activeRuns.set(runId, {
+    goal: nlGoal,
+    status: 'running',
+    startTime: run.startTime,
+    logs: [],
+    artifacts: []
+  });
+  
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -1) + 'Z';
   const runPath = path.join(WORKSPACE, `run-${timestamp}`);
   
   await fs.mkdir(runPath, { recursive: true });
   
-  await logStep(runPath, "start", "ok", nlGoal);
+  await logStepDB(runId, "start", "ok", nlGoal);
   
   const plan = planner(nlGoal);
-  await logStep(runPath, "planner", "ok", JSON.stringify(plan));
+  await logStepDB(runId, "planner", "ok", JSON.stringify(plan));
+  await ArtifactDB.create(runId, 'planner.json', 'json', JSON.stringify(plan, null, 2));
   
   const spec = specifier(plan);
   await fs.writeFile(path.join(runPath, 'SPECIFIER.json'), JSON.stringify(spec, null, 2));
-  await logStep(runPath, "specifier", "ok", "spec saved");
+  await ArtifactDB.create(runId, 'SPECIFIER.json', 'json', JSON.stringify(spec, null, 2));
+  await logStepDB(runId, "specifier", "ok", "spec saved");
   
   try {
-    const coderSuccess = await coder(spec, runPath);
-    await logStep(runPath, "coder", "ok", "repo created");
+    const coderSuccess = await coder(spec, runPath, runId);
+    await logStepDB(runId, "coder", "ok", "repo created");
   } catch (error: any) {
-    await logStep(runPath, "coder", "fail", error.message);
-    return runPath;
+    await logStepDB(runId, "coder", "fail", error.message);
+    await RunDB.updateStatus(runId, 'failed');
+    return { runId, runPath };
   }
   
   const [testOk, testNote] = await tester(runPath);
-  await logStep(runPath, "tester", testOk ? "ok" : "fail", testNote);
+  await logStepDB(runId, "tester", testOk ? "ok" : "fail", testNote);
   
   const [fixOk, fixNote] = await fixer(runPath, testOk);
-  await logStep(runPath, "fixer", fixOk ? "ok" : "fail", fixNote);
+  await logStepDB(runId, "fixer", fixOk ? "ok" : "fail", fixNote);
   
   const [deployOk, deployNote] = await deployer(runPath);
-  await logStep(runPath, "deployer", deployOk ? "ok" : "fail", deployNote);
+  await logStepDB(runId, "deployer", deployOk ? "ok" : "fail", deployNote);
   
   const evalRes = evaluator(runPath, testOk, deployOk);
   await fs.writeFile(path.join(runPath, 'EVALUATION.json'), JSON.stringify(evalRes, null, 2));
-  await logStep(runPath, "evaluator", "ok", JSON.stringify(evalRes));
+  await ArtifactDB.create(runId, 'EVALUATION.json', 'json', JSON.stringify(evalRes, null, 2));
+  await logStepDB(runId, "evaluator", "ok", JSON.stringify(evalRes));
   
-  await logStep(runPath, "finish", "ok", "pipeline complete");
+  await logStepDB(runId, "finish", "ok", "pipeline complete");
   
-  return runPath;
+  // Update run status to completed
+  await RunDB.updateStatus(runId, 'completed');
+  
+  // Clean up active run
+  activeRuns.delete(runId);
+  
+  return { runId, runPath };
 }
 
 export async function POST(request: NextRequest) {
@@ -266,10 +304,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Goal is required' }, { status: 400 });
     }
     
-    const runPath = await runPipeline(goal);
+    const { runId, runPath } = await runPipeline(goal);
     
     return NextResponse.json({ 
       success: true, 
+      runId,
       runPath,
       message: `Pipeline completed. Artifacts written to: ${runPath}`
     });
@@ -287,7 +326,10 @@ export async function GET() {
     message: 'Omnior Orchestrator API is running',
     endpoints: {
       'POST /api/orchestrator': 'Run pipeline with natural language goal',
-      'GET /api/orchestrator': 'API status'
+      'GET /api/orchestrator': 'API status',
+      'GET /api/orchestrator/stream': 'Stream live logs',
+      'GET /api/orchestrator/runs': 'List all runs',
+      'GET /api/orchestrator/runs/[id]': 'Get specific run'
     }
   });
 }

@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,12 +10,70 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Orchestrator Run Model - Represents a single pipeline execution
+model Run {
+  id              String   @id @default(cuid())
+  goal            String   // Natural language goal
+  status          String   @default("running") // running, completed, failed
+  startTime       DateTime @default(now())
+  endTime         DateTime?
+  duration        Int?     // Duration in milliseconds
+  metadata        String?  // JSON string with additional metadata
+  
+  // Relationships
+  logs            Log[]
+  artifacts       Artifact[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@map("runs")
+}
+
+// Log Model - Individual pipeline step logs
+model Log {
+  id        String   @id @default(cuid())
+  runId     String   // Foreign key to Run
+  step      String   // Pipeline step (planner, specifier, coder, etc.)
+  status    String   // ok, fail, running
+  message   String   // Log message
+  timestamp DateTime @default(now())
+  
+  // Relationships
+  run       Run     @relation(fields: [runId], references: [id], onDelete: Cascade)
+  
+  @@map("logs")
+}
+
+// Artifact Model - Generated files and data
+model Artifact {
+  id          String   @id @default(cuid())
+  runId       String   // Foreign key to Run
+  name        String   // Artifact name (e.g., "planner.json", "pipeline_log.json")
+  type        String   // Artifact type (json, log, code, etc.)
+  content     String   // Artifact content (for small artifacts)
+  filePath    String?  // File path for large artifacts
+  size        Int?     // File size in bytes
+  
+  // Relationships
+  run         Run     @relation(fields: [runId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  
+  @@map("artifacts")
+}
+
+// Legacy User and Post models (can be removed if not needed)
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
   name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  posts     Post[]
+  
+  @@map("users")
 }
 
 model Post {
@@ -29,4 +84,8 @@ model Post {
   authorId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  @@map("posts")
 }
